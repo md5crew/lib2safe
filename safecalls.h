@@ -9,15 +9,15 @@
 /* USER */
 #define CALL_CHECK_EMAIL "chk_mail"
 #define CALL_CHECK_LOGIN "chk_login"
-#define CALL_GET_CAPTCHA "get_captcha" // 10m timeout
+#define CALL_GET_CAPTCHA "get_captcha" // for 10min
 #define CALL_REGISTER "add_login"
-#define CALL_AUTH "auth"
+#define CALL_AUTH "auth" // 3 login fails before new captcha
 #define CALL_UNREGISTER "remove_login"
 #define CALL_LOGOUT "logout"
 #define CALL_GET_DISK_QUOTA "get_disk_quota"
 #define CALL_GET_PERSONAL "get_personal_data"
 #define CALL_SET_PERSONAL "set_personal_data"
-#define CALL_SET_PASSWORD "change_password"
+#define CALL_CHANGE_PASSWORD "change_password"
 #define CALL_ACTIVATE_PROMO "activate_promo_code"
 
 /* FILESYSTEM */
@@ -61,11 +61,12 @@
 
 /* PARAMS SUPPORTED BY THE 2SAFE API */
 #define PARAM_CMD "cmd"
-#define PARAM_TOKEN "token"
+#define PARAM_TOKEN "token" // 24 hours
 #define PARAM_EMAIL "email"
 #define PARAM_LOGIN "login"
 #define PARAM_PASSWORD "password"
 #define PARAM_NEW_PASSWORD "new_password"
+#define PARAM_FORMAT "format"
 #define PARAM_CAPTCHA "captcha"
 #define PARAM_CAPTCHA_ID "id"
 #define PARAM_CAPTCHA_KEY "key"

@@ -12,6 +12,14 @@ void SafeApi::freeWorker(ulong worker_id)
     workers.remove(worker_id);
 }
 
+void SafeApi::clearState()
+{
+    this->lastToken.clear();
+    this->lastUserId.clear();
+    this->lastRootDir.clear();
+    this->lastLogin.clear();
+}
+
 bool SafeApi::reportError(ulong id, const QJsonDocument& response)
 {
     QJsonValue success = response.object().value("success");
@@ -35,5 +43,5 @@ ulong SafeApi::getId()
 
 void SafeApi::networkError(const QString& text)
 {
-    qDebug() << "NETWORK ERROR: \n" << text;
+    qDebug() << "[ERROR] network error:\n" << text;
 }
