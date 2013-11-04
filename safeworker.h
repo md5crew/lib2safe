@@ -14,7 +14,7 @@ public:
     ~SafeWorker();
 
 signals:
-    void done(QJsonDocument response);
+    void done(QByteArray data);
     void error(QString text);
 
 public slots:

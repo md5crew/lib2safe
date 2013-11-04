@@ -1,21 +1,27 @@
 #include "safeapi.h"
 
-long SafeApi::checkEmail(QString email)
+ulong SafeApi::checkEmail(QString email)
 {
-    int worker_id = workers.count();
-    long call_id = getId();
+    ulong call_id = getId();
+    ulong worker_id = ticker;
     SafeWorker *worker = new SafeWorker(this->host);
-    workers.append(worker);
+    workers.insert(worker_id, worker);
 
-    this->connect(worker, &SafeWorker::done, [=](const QJsonDocument& response) {
+    this->connect(worker, &SafeWorker::done, [=](const QByteArray& data) {
         freeWorker(worker_id);
-        if(reportError(call_id, response)) {
+
+        QJsonParseError json_error;
+        QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
+        if(json_error.error) {
+            qDebug() << "JSON ERROR: " << json_error.errorString();
+            return;
+        } else if(reportError(call_id, reply)) {
             return;
         }
 
         /* LOGIC */
-        QJsonValue data = response.object().value("response");
-        emit checkEmailComplete(call_id, data.toObject().
+        QJsonValue response = reply.object().value("response");
+        emit checkEmailComplete(call_id, response.toObject().
                     value("available").toString() == TRUE);
         /* ----- */
     });

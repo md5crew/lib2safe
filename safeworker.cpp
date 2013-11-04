@@ -31,8 +31,7 @@ void SafeWorker::call(QString cmd)
     });
 
     connect(reply, &QNetworkReply::readyRead, [=](){
-        QJsonDocument response = QJsonDocument::fromJson(reply->readAll());
-        emit done(response);
+        emit done(reply->readAll());
     });
 
     connect(reply, &QNetworkReply::finished, [=](){

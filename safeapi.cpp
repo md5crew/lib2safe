@@ -6,12 +6,13 @@ SafeApi::SafeApi(QString host)
     this->host = host;
 }
 
-void SafeApi::freeWorker(int worker_id)
+void SafeApi::freeWorker(ulong worker_id)
 {
-    delete workers.at(worker_id);
+    delete workers.value(worker_id);
+    workers.remove(worker_id);
 }
 
-bool SafeApi::reportError(long id, const QJsonDocument& response)
+bool SafeApi::reportError(ulong id, const QJsonDocument& response)
 {
     QJsonValue success = response.object().value("success");
     if(success.toString() == FALSE) {
@@ -26,7 +27,7 @@ bool SafeApi::reportError(long id, const QJsonDocument& response)
     }
 }
 
-long SafeApi::getId()
+ulong SafeApi::getId()
 {
     ++ticker;
     return (QDateTime::currentMSecsSinceEpoch() << 32) + ticker;

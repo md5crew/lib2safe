@@ -14,22 +14,22 @@ public:
     SafeApi(QString host);
 
 signals:
-    void errorRaised(long id, quint16 code, QString text);
-    void checkEmailComplete(long id, bool result);
+    void errorRaised(ulong id, quint16 code, QString text);
+    void checkEmailComplete(ulong id, bool result);
 
 public slots:
-    long checkEmail(QString email);
-    void freeWorker(int worker_id);
+    ulong checkEmail(QString email);
+    void freeWorker(ulong worker_id);
 
 private slots:
     void networkError(const QString& text);
 
 private:
-    long ticker;
+    ulong ticker;
     QString host;
-    QList<SafeWorker*> workers;
-    bool reportError(long id, const QJsonDocument& response);
-    long getId();
+    QHash<ulong, SafeWorker*> workers;
+    bool reportError(ulong id, const QJsonDocument& response);
+    ulong getId();
 };
 
 #endif // SAFEAPI_H
