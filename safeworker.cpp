@@ -14,12 +14,12 @@ SafeWorker::~SafeWorker()
     manager->deleteLater();
 }
 
-void SafeWorker::call(QString cmd)
+void SafeWorker::run()
 {
     if(!manager) {
         return;
     } else {
-        params.addQueryItem(PARAM_CMD, cmd);
+        params.addQueryItem(PARAM_CMD, this->cmd);
     }
 
     QNetworkRequest req("https://" + this->host + "/");

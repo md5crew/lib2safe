@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QtMath>
+#include <QMutex>
 #include "safeworker.h"
 #include "safecalls.h"
 #include "safeerrors.h"
@@ -61,7 +62,12 @@ private slots:
 private:
     ulong ticker;
     QString host;
-    QHash<ulong, SafeWorker*> workers;
+    int maxThreads;
+    int maxFileThreads;
+    QMutex mutex;
+
+    QHash<ulong, SafeWorker*> workersPool;
+    QQueue<SafeWorker*> workersQueue;
 
     /* memory */
     QString lastToken;
@@ -70,6 +76,9 @@ private:
     QString lastLogin;
 
     /* methods */
+    SafeWorker *createWorker(QString cmd);
+    void routeWorker(SafeWorker *worker);
+    void processWorkerQueue();
     bool reportError(ulong id, const QJsonDocument& response);
     ulong getId();
 };

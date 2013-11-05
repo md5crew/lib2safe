@@ -4,11 +4,11 @@ ulong SafeApi::getCaptcha()
 {
     ulong call_id = getId();
     ulong worker_id = ticker;
-    SafeWorker *worker = new SafeWorker(this->host);
-    workers.insert(worker_id, worker);
+    SafeWorker *worker = createWorker(CALL_GET_CAPTCHA);
+    worker->setId(worker_id);
 
-    this->connect(worker, &SafeWorker::done,
-                  [=](const SafeWorker *w, const QByteArray& data) {
+    connect(worker, &SafeWorker::done,
+            [=](const SafeWorker *w, const QByteArray& data) {
         /* LOGIC */
         SafeCaptcha captcha;
         if(w->getCookies().contains("captcha2safe")) {
@@ -19,18 +19,13 @@ ulong SafeApi::getCaptcha()
         }
 
         freeWorker(worker_id);
+        processWorkerQueue();
         captcha.picture = data;
         emit getCaptchaComplete(call_id, captcha);
         /* ----- */
     });
 
-    this->connect(worker, &SafeWorker::error, [=](const QString& text){
-        freeWorker(worker_id);
-        networkError(text);
-    });
-
-    /* PARAMS & CALL */
-    worker->call(CALL_GET_CAPTCHA);
+    routeWorker(worker);
     return call_id;
 }
 
@@ -38,12 +33,14 @@ ulong SafeApi::checkEmail(QString email)
 {
     ulong call_id = getId();
     ulong worker_id = ticker;
-    SafeWorker *worker = new SafeWorker(this->host);
-    workers.insert(worker_id, worker);
+    SafeWorker *worker = createWorker(CALL_CHECK_EMAIL);
+    worker->addParam(PARAM_EMAIL, email);
+    worker->setId(worker_id);
 
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
+        processWorkerQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -62,14 +59,7 @@ ulong SafeApi::checkEmail(QString email)
         /* ----- */
     });
 
-    this->connect(worker, &SafeWorker::error, [=](const QString& text){
-        freeWorker(worker_id);
-        networkError(text);
-    });
-
-    /* PARAMS & CALL */
-    worker->addParam(PARAM_EMAIL, email);
-    worker->call(CALL_CHECK_EMAIL);
+    routeWorker(worker);
     return call_id;
 }
 
@@ -77,12 +67,14 @@ ulong SafeApi::checkLogin(QString login)
 {
     ulong call_id = getId();
     ulong worker_id = ticker;
-    SafeWorker *worker = new SafeWorker(this->host);
-    workers.insert(worker_id, worker);
+    SafeWorker *worker = createWorker(CALL_CHECK_LOGIN);
+    worker->addParam(PARAM_LOGIN, login);
+    worker->setId(worker_id);
 
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
+        processWorkerQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -101,14 +93,7 @@ ulong SafeApi::checkLogin(QString login)
         /* ----- */
     });
 
-    this->connect(worker, &SafeWorker::error, [=](const QString& text){
-        freeWorker(worker_id);
-        networkError(text);
-    });
-
-    /* PARAMS & CALL */
-    worker->addParam(PARAM_LOGIN, login);
-    worker->call(CALL_CHECK_LOGIN);
+    routeWorker(worker);
     return call_id;
 }
 
@@ -117,12 +102,17 @@ ulong SafeApi::registerUser(QString login, QString password,
 {
     ulong call_id = getId();
     ulong worker_id = ticker;
-    SafeWorker *worker = new SafeWorker(this->host);
-    workers.insert(worker_id, worker);
+    SafeWorker *worker = createWorker(CALL_REGISTER);
+    worker->addParam(PARAM_LOGIN, login);
+    worker->addParam(PARAM_PASSWORD, password);
+    worker->addParam(PARAM_CAPTCHA, user_captcha);
+    worker->addParam(PARAM_CAPTCHA_ID, captcha.id);
+    worker->setId(worker_id);
 
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
+        processWorkerQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -143,17 +133,7 @@ ulong SafeApi::registerUser(QString login, QString password,
         /* ----- */
     });
 
-    this->connect(worker, &SafeWorker::error, [=](const QString& text){
-        freeWorker(worker_id);
-        networkError(text);
-    });
-
-    /* PARAMS & CALL */
-    worker->addParam(PARAM_LOGIN, login);
-    worker->addParam(PARAM_PASSWORD, password);
-    worker->addParam(PARAM_CAPTCHA, user_captcha);
-    worker->addParam(PARAM_CAPTCHA_ID, captcha.id);
-    worker->call(CALL_REGISTER);
+    routeWorker(worker);
     return call_id;
 }
 
@@ -161,12 +141,15 @@ ulong SafeApi::unregisterUser(QString login, QString password)
 {
     ulong call_id = getId();
     ulong worker_id = ticker;
-    SafeWorker *worker = new SafeWorker(this->host);
-    workers.insert(worker_id, worker);
+    SafeWorker *worker = createWorker(CALL_UNREGISTER);
+    worker->addParam(PARAM_LOGIN, login);
+    worker->addParam(PARAM_PASSWORD, password);
+    worker->setId(worker_id);
 
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
+        processWorkerQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -187,15 +170,7 @@ ulong SafeApi::unregisterUser(QString login, QString password)
         /* ----- */
     });
 
-    this->connect(worker, &SafeWorker::error, [=](const QString& text){
-        freeWorker(worker_id);
-        networkError(text);
-    });
-
-    /* PARAMS & CALL */
-    worker->addParam(PARAM_LOGIN, login);
-    worker->addParam(PARAM_PASSWORD, password);
-    worker->call(CALL_UNREGISTER);
+    routeWorker(worker);
     return call_id;
 }
 
@@ -203,12 +178,15 @@ ulong SafeApi::authUser(QString login, QString password)
 {
     ulong call_id = getId();
     ulong worker_id = ticker;
-    SafeWorker *worker = new SafeWorker(this->host);
-    workers.insert(worker_id, worker);
+    SafeWorker *worker = createWorker(CALL_AUTH);
+    worker->addParam(PARAM_LOGIN, login);
+    worker->addParam(PARAM_PASSWORD, password);
+    worker->setId(worker_id);
 
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
+        processWorkerQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -229,15 +207,7 @@ ulong SafeApi::authUser(QString login, QString password)
         /* ----- */
     });
 
-    this->connect(worker, &SafeWorker::error, [=](const QString& text){
-        freeWorker(worker_id);
-        networkError(text);
-    });
-
-    /* PARAMS & CALL */
-    worker->addParam(PARAM_LOGIN, login);
-    worker->addParam(PARAM_PASSWORD, password);
-    worker->call(CALL_AUTH);
+    routeWorker(worker);
     return call_id;
 }
 
@@ -246,12 +216,17 @@ ulong SafeApi::authUserCaptcha(QString login, QString password,
 {
     ulong call_id = getId();
     ulong worker_id = ticker;
-    SafeWorker *worker = new SafeWorker(this->host);
-    workers.insert(worker_id, worker);
+    SafeWorker *worker = createWorker(CALL_AUTH);
+    worker->addParam(PARAM_LOGIN, login);
+    worker->addParam(PARAM_PASSWORD, password);
+    worker->addParam(PARAM_CAPTCHA, user_captcha);
+    worker->addParam(PARAM_CAPTCHA_ID, captcha.id);
+    worker->setId(worker_id);
 
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
+        processWorkerQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -272,17 +247,7 @@ ulong SafeApi::authUserCaptcha(QString login, QString password,
         /* ----- */
     });
 
-    this->connect(worker, &SafeWorker::error, [=](const QString& text){
-        freeWorker(worker_id);
-        networkError(text);
-    });
-
-    /* PARAMS & CALL */
-    worker->addParam(PARAM_LOGIN, login);
-    worker->addParam(PARAM_PASSWORD, password);
-    worker->addParam(PARAM_CAPTCHA, user_captcha);
-    worker->addParam(PARAM_CAPTCHA_ID, captcha.id);
-    worker->call(CALL_AUTH);
+    routeWorker(worker);
     return call_id;
 }
 
@@ -290,12 +255,14 @@ ulong SafeApi::logoutUser()
 {
     ulong call_id = getId();
     ulong worker_id = ticker;
-    SafeWorker *worker = new SafeWorker(this->host);
-    workers.insert(worker_id, worker);
+    SafeWorker *worker = createWorker(CALL_LOGOUT);
+    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->setId(worker_id);
 
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
+        processWorkerQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -313,14 +280,7 @@ ulong SafeApi::logoutUser()
         /* ----- */
     });
 
-    this->connect(worker, &SafeWorker::error, [=](const QString& text){
-        freeWorker(worker_id);
-        networkError(text);
-    });
-
-    /* PARAMS & CALL */
-    worker->addParam(PARAM_TOKEN, this->lastToken);
-    worker->call(CALL_LOGOUT);
+    routeWorker(worker);
     return call_id;
 }
 
@@ -328,12 +288,14 @@ ulong SafeApi::getDiskQuota()
 {
     ulong call_id = getId();
     ulong worker_id = ticker;
-    SafeWorker *worker = new SafeWorker(this->host);
-    workers.insert(worker_id, worker);
+    SafeWorker *worker = createWorker(CALL_GET_DISK_QUOTA);
+    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->setId(worker_id);
 
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
+        processWorkerQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -356,14 +318,7 @@ ulong SafeApi::getDiskQuota()
         /* ----- */
     });
 
-    this->connect(worker, &SafeWorker::error, [=](const QString& text){
-        freeWorker(worker_id);
-        networkError(text);
-    });
-
-    /* PARAMS & CALL */
-    worker->addParam(PARAM_TOKEN, this->lastToken);
-    worker->call(CALL_GET_DISK_QUOTA);
+    routeWorker(worker);
     return call_id;
 }
 
@@ -371,12 +326,14 @@ ulong SafeApi::getPersonal()
 {
     ulong call_id = getId();
     ulong worker_id = ticker;
-    SafeWorker *worker = new SafeWorker(this->host);
-    workers.insert(worker_id, worker);
+    SafeWorker *worker = createWorker(CALL_GET_PERSONAL);
+    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->setId(worker_id);
 
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
+        processWorkerQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -396,14 +353,7 @@ ulong SafeApi::getPersonal()
         /* ----- */
     });
 
-    this->connect(worker, &SafeWorker::error, [=](const QString& text){
-        freeWorker(worker_id);
-        networkError(text);
-    });
-
-    /* PARAMS & CALL */
-    worker->addParam(PARAM_TOKEN, this->lastToken);
-    worker->call(CALL_GET_PERSONAL);
+    routeWorker(worker);
     return call_id;
 }
 
@@ -411,12 +361,16 @@ ulong SafeApi::setPersonal(QJsonDocument personal, QJsonDocument props)
 {
     ulong call_id = getId();
     ulong worker_id = ticker;
-    SafeWorker *worker = new SafeWorker(this->host);
-    workers.insert(worker_id, worker);
+    SafeWorker *worker = createWorker(CALL_SET_PERSONAL);
+    worker->addParam(PARAM_PERSONAL, personal.toJson());
+    worker->addParam(PARAM_PROPERTIES, props.toJson());
+    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->setId(worker_id);
 
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
+        processWorkerQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -433,16 +387,7 @@ ulong SafeApi::setPersonal(QJsonDocument personal, QJsonDocument props)
         /* ----- */
     });
 
-    this->connect(worker, &SafeWorker::error, [=](const QString& text){
-        freeWorker(worker_id);
-        networkError(text);
-    });
-
-    /* PARAMS & CALL */
-    worker->addParam(PARAM_PERSONAL, personal.toJson());
-    worker->addParam(PARAM_PROPERTIES, props.toJson());
-    worker->addParam(PARAM_TOKEN, this->lastToken);
-    worker->call(CALL_SET_PERSONAL);
+    routeWorker(worker);
     return call_id;
 }
 
@@ -450,12 +395,17 @@ ulong SafeApi::setPersonalEmail(QJsonDocument personal, QJsonDocument props, QSt
 {
     ulong call_id = getId();
     ulong worker_id = ticker;
-    SafeWorker *worker = new SafeWorker(this->host);
-    workers.insert(worker_id, worker);
+    SafeWorker *worker = createWorker(CALL_SET_PERSONAL);
+    worker->addParam(PARAM_PERSONAL, personal.toJson());
+    worker->addParam(PARAM_PROPERTIES, props.toJson());
+    worker->addParam(PARAM_PASSWORD, password);
+    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->setId(worker_id);
 
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
+        processWorkerQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -472,17 +422,7 @@ ulong SafeApi::setPersonalEmail(QJsonDocument personal, QJsonDocument props, QSt
         /* ----- */
     });
 
-    this->connect(worker, &SafeWorker::error, [=](const QString& text){
-        freeWorker(worker_id);
-        networkError(text);
-    });
-
-    /* PARAMS & CALL */
-    worker->addParam(PARAM_PERSONAL, personal.toJson());
-    worker->addParam(PARAM_PROPERTIES, props.toJson());
-    worker->addParam(PARAM_PASSWORD, password);
-    worker->addParam(PARAM_TOKEN, this->lastToken);
-    worker->call(CALL_SET_PERSONAL);
+    routeWorker(worker);
     return call_id;
 }
 
@@ -490,12 +430,16 @@ ulong SafeApi::changePassword(QString login, QString password, QString new_passw
 {
     ulong call_id = getId();
     ulong worker_id = ticker;
-    SafeWorker *worker = new SafeWorker(this->host);
-    workers.insert(worker_id, worker);
+    SafeWorker *worker = createWorker(CALL_CHANGE_PASSWORD);
+    worker->addParam(PARAM_LOGIN, login);
+    worker->addParam(PARAM_PASSWORD, password);
+    worker->addParam(PARAM_NEW_PASSWORD, new_password);
+    worker->setId(worker_id);
 
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
+        processWorkerQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -512,16 +456,7 @@ ulong SafeApi::changePassword(QString login, QString password, QString new_passw
         /* ----- */
     });
 
-    this->connect(worker, &SafeWorker::error, [=](const QString& text){
-        freeWorker(worker_id);
-        networkError(text);
-    });
-
-    /* PARAMS & CALL */
-    worker->addParam(PARAM_LOGIN, login);
-    worker->addParam(PARAM_PASSWORD, password);
-    worker->addParam(PARAM_NEW_PASSWORD, new_password);
-    worker->call(CALL_CHANGE_PASSWORD);
+    routeWorker(worker);
     return call_id;
 }
 
@@ -529,12 +464,15 @@ ulong SafeApi::activatePromo(QString code)
 {
     ulong call_id = getId();
     ulong worker_id = ticker;
-    SafeWorker *worker = new SafeWorker(this->host);
-    workers.insert(worker_id, worker);
+    SafeWorker *worker = createWorker(CALL_ACTIVATE_PROMO);
+    worker->addParam(PARAM_PROMO_CODE, code);
+    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->setId(worker_id);
 
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
+        processWorkerQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -558,15 +496,7 @@ ulong SafeApi::activatePromo(QString code)
         /* ----- */
     });
 
-    this->connect(worker, &SafeWorker::error, [=](const QString& text){
-        freeWorker(worker_id);
-        networkError(text);
-    });
-
-    /* PARAMS & CALL */
-    worker->addParam(PARAM_PROMO_CODE, code);
-    worker->addParam(PARAM_TOKEN, this->lastToken);
-    worker->call(CALL_ACTIVATE_PROMO);
+    routeWorker(worker);
     return call_id;
 }
 

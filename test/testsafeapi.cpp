@@ -82,6 +82,7 @@ public slots:
             qDebug() << "["<< id
                      << "] Disk quota: (used:"<< used
                      <<"), (total:" << total << ")";
+
             delete api;
             if(--n < 1) { emit stop(); }
         });

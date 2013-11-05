@@ -4,6 +4,8 @@
 #define API_HOST "api.2safe.com"
 #define TRUE "true"
 #define FALSE "false"
+#define MAX_THREADS 50
+#define MAX_FILE_THREADS 8
 /* CALLS SUPPORTED BY THE 2SAFE API */
 
 /* USER */
