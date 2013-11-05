@@ -1,7 +1,7 @@
 #include "safeapi.h"
 
 SafeApi::SafeApi(QString host) :
-    ticker(0),
+    ticker(1000),
     maxThreads(MAX_THREADS),
     maxFileThreads(MAX_FILE_THREADS)
 {
@@ -42,9 +42,8 @@ ulong SafeApi::getId()
 {
     mutex.lock();
     ++ticker;
-    int id = (QDateTime::currentMSecsSinceEpoch() << 32) + ticker;
     mutex.unlock();
-    return id;
+    return ticker;
 }
 
 void SafeApi::networkError(const QString& text)

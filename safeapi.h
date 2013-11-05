@@ -36,6 +36,9 @@ signals:
     void changePasswordComplete(ulong id);
     void activatePromoComplete(ulong id, ulong used_bytes, ulong total_bytes, ulong added);
 
+    /* FILESYSTEM */
+
+
 public slots:
     void freeWorker(ulong worker_id);
     void clearState();
@@ -55,6 +58,9 @@ public slots:
     ulong setPersonalEmail(QJsonDocument personal, QJsonDocument props, QString password);
     ulong changePassword(QString login, QString password, QString new_password);
     ulong activatePromo(QString code);
+
+    /* FILESYSTEM */
+
 
 private slots:
     void networkError(const QString& text);
