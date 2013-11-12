@@ -36,8 +36,8 @@
 #define CALL_GET_PROPS "get_props"
 #define CALL_SET_PROPS "set_props"
 #define CALL_GET_TREE  "get_tree_parent"
-#define CALL_PURGE_TRASH "purge_trash"
 #define CALL_GET_EVENTS "get_events" // first 300 by default
+#define CALL_PURGE_TRASH "purge_trash"
 
 /* LOCKS */
 #define CALL_LOCK "lock_object"
@@ -78,6 +78,7 @@
 #define PARAM_SIZE "size"
 #define PARAM_OFFSET "offset"
 #define PARAM_FILE "file"
+#define PARAM_FILE_ID "id"
 #define PARAM_URL "url"
 #define PARAM_CONTAINER "container" // if PARAM_URL used
 #define PARAM_DIR_ID "dir_id"

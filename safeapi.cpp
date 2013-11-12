@@ -16,6 +16,14 @@ void SafeApi::freeWorker(ulong worker_id)
     mutex.unlock();
 }
 
+void SafeApi::freeFileWorker(ulong worker_id)
+{
+    mutex.lock();
+    SafeWorker *worker = fileWorkersPool.take(worker_id);
+    delete worker;
+    mutex.unlock();
+}
+
 void SafeApi::clearState()
 {
     this->lastToken.clear();
@@ -63,6 +71,18 @@ SafeWorker *SafeApi::createWorker(QString cmd)
     return worker;
 }
 
+SafeWorker *SafeApi::createFileWorker(QString cmd)
+{
+    SafeWorker *worker = new SafeWorker(this->host);
+    connect(worker, &SafeWorker::error, [=](const QString& text){
+        freeFileWorker(worker->getId());
+        networkError(text);
+    });
+
+    worker->setCmd(cmd);
+    return worker;
+}
+
 void SafeApi::routeWorker(SafeWorker *worker)
 {
     mutex.lock();
@@ -75,7 +95,23 @@ void SafeApi::routeWorker(SafeWorker *worker)
     mutex.unlock();
 }
 
-void SafeApi::processWorkerQueue()
+void SafeApi::routeFileWorker(SafeWorker *worker)
+{
+    mutex.lock();
+    if(fileWorkersPool.count() < maxFileThreads) {
+        fileWorkersPool.insert(worker->getId(), worker);
+        if(worker->getCmd() == CALL_PUSH_FILE) {
+            worker->pushFile();
+        } else {
+            worker->pullFile();
+        }
+    } else {
+        fileWorkersQueue.enqueue(worker);
+    }
+    mutex.unlock();
+}
+
+void SafeApi::processWorkersQueue()
 {
     mutex.lock();
     int free = maxThreads - workersPool.count();
@@ -92,5 +128,29 @@ void SafeApi::processWorkerQueue()
 
     for(int i = 0; i < min; ++i) {
         workers[i]->run();
+    }
+}
+
+void SafeApi::processFileWorkersQueue()
+{
+    mutex.lock();
+    int free = maxFileThreads - fileWorkersPool.count();
+    int avail = fileWorkersQueue.count();
+    int min = (free < avail ? free : avail);
+
+    SafeWorker* workers[min];
+    for(int i = 0; i < min; ++i) {
+        SafeWorker *worker = fileWorkersQueue.dequeue();
+        fileWorkersPool.insert(worker->getId(), worker);
+        workers[i] = worker;
+    }
+    mutex.unlock();
+
+    for(int i = 0; i < min; ++i) {
+        if(workers[i]->getCmd() == CALL_PUSH_FILE) {
+            workers[i]->pushFile();
+        } else {
+            workers[i]->pullFile();
+        }
     }
 }

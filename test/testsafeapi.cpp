@@ -15,13 +15,16 @@ signals:
 public slots:
     void setN(int n) { this->n = n; }
 
-    void checkEmailFree()
+    void checkEmail()
     {
+        int k;
         auto api = new SafeApi(API_HOST);
-        connect(api, &SafeApi::checkEmailComplete, [=](ulong id, bool available){
+        connect(api, &SafeApi::checkEmailComplete, [=, &k](ulong id, bool available){
             qDebug() << "["<< id << "] Checked aviability:" << available;
-            delete api;
-            if(--n < 1) { emit stop(); }
+            if(--k < (0-1)) {
+                delete api;
+                if(--n < 1) { emit stop(); }
+            }
         });
 
         connect(api, &SafeApi::errorRaised, [=](ulong id, quint16 code, QString text){
@@ -31,23 +34,6 @@ public slots:
         });
 
         api->checkEmail("me@kc.vc");
-    }
-
-    void checkEmailTaken()
-    {
-        auto api = new SafeApi(API_HOST);
-        connect(api, &SafeApi::checkEmailComplete, [=](ulong id, bool available){
-            qDebug() << "["<< id << "] Checked aviability:" << available;
-            delete api;
-            if(--n < 1) { emit stop(); }
-        });
-
-        connect(api, &SafeApi::errorRaised, [=](ulong id, quint16 code, QString text){
-            qDebug() << "[" << id << "] Error:" << text;
-            delete api;
-            if(--n < 1) { emit stop(); }
-        });
-
         api->checkEmail("not.me.lol@kc.vc");
     }
 
@@ -95,6 +81,80 @@ public slots:
 
         api->authUser("md5@kc.vc", "12345678");
     }
+
+    void listDirs()
+    {
+        int k;
+        auto api = new SafeApi(API_HOST);
+        connect(api, &SafeApi::authUserComplete, [=](ulong id, const QString& user_id){
+            qDebug() << "["<< id << "] Auth user complete (id):" << user_id;
+            api->listDir(); // /
+            api->listDir("372492033760"); // /Музыка/
+        });
+
+        connect(api, &SafeApi::listDirComplete, [=, &k](
+                ulong id, QJsonArray dirs,
+                QJsonArray files,
+                QJsonObject root_info){
+            qDebug() << "["<< id << "] Listing directory ("
+                     << root_info.value("tree").toString() << "):"
+                     << "\n+++++INFO+++++";
+            qDebug() << root_info;
+
+            qDebug() << "\n+++++DIRS+++++";
+            foreach(QJsonValue dir, dirs) {
+                qDebug() << dir.toObject();
+            }
+
+            qDebug() << "\n+++++FILES+++++";
+            foreach(QJsonValue file, files) {
+                qDebug() << file.toObject();
+            }
+
+            if(--k < (0-1)) {
+                delete api;
+                if(--n < 1) { emit stop(); }
+            }
+        });
+
+        connect(api, &SafeApi::errorRaised, [=](ulong id, quint16 code, QString text){
+            qDebug() << "[" << id << "] Error:" << text;
+            delete api;
+            if(--n < 1) { emit stop(); }
+        });
+
+        api->authUser("md5@kc.vc", "12345678");
+    }
+
+    void getFile()
+    {
+        auto api = new SafeApi(API_HOST);
+        connect(api, &SafeApi::authUserComplete, [=](ulong id, const QString& user_id){
+            qDebug() << "["<< id << "] Auth user complete (id):" << user_id;
+            api->pullFile("372493033760", "08 Водичка.mp3"); // '/Музыка/08 Водичка.mp3'
+        });
+
+        connect(api, &SafeApi::pullFileComplete, [=](ulong id){
+            qDebug() << "["<< id << "] Sucessfully pulled file"
+                     << "'08 Водичка.mp3'";
+            delete api;
+            if(--n < 1) { emit stop(); }
+        });
+
+        connect(api, &SafeApi::pullFileProgress, [=](ulong id, ulong bytes, ulong total_bytes){
+            float percentage = ((float)bytes) / total_bytes * 100;
+            qDebug() << "["<< id << "] File download progress:" << percentage
+                     << "(" << bytes << "/" << total_bytes << ")";
+        });
+
+        connect(api, &SafeApi::errorRaised, [=](ulong id, quint16 code, QString text){
+            qDebug() << "[" << id << "] Error:" << text;
+            delete api;
+            if(--n < 1) { emit stop(); }
+        });
+
+        api->authUser("md5@kc.vc", "12345678");
+    }
 };
 
 int main(int argc, char *argv[])
@@ -102,11 +162,12 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
     auto test = new TestSafeApi();
     a.connect(test, &TestSafeApi::stop, &QCoreApplication::quit);
-    test->setN(4);
-    test->checkEmailFree(); // me@kc.vc
-    test->checkEmailTaken(); // not.me.lol@kc.vc
-    test->getCaptcha();
-    test->getDiskQuota();
+    test->setN(1);
+    //test->checkEmail();
+    //test->getCaptcha();
+    //test->getDiskQuota();
+    //test->listDirs();
+    test->getFile();
     return a.exec();
 }
 

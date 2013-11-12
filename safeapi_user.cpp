@@ -18,7 +18,7 @@ ulong SafeApi::getCaptcha()
         }
 
         freeWorker(worker_id);
-        processWorkerQueue();
+        processWorkersQueue();
         captcha.picture = data;
         emit getCaptchaComplete(worker_id, captcha);
         /* ----- */
@@ -38,7 +38,7 @@ ulong SafeApi::checkEmail(QString email)
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
-        processWorkerQueue();
+        processWorkersQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -71,7 +71,7 @@ ulong SafeApi::checkLogin(QString login)
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
-        processWorkerQueue();
+        processWorkersQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -108,7 +108,7 @@ ulong SafeApi::registerUser(QString login, QString password,
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
-        processWorkerQueue();
+        processWorkersQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -144,7 +144,7 @@ ulong SafeApi::unregisterUser(QString login, QString password)
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
-        processWorkerQueue();
+        processWorkersQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -180,7 +180,7 @@ ulong SafeApi::authUser(QString login, QString password)
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
-        processWorkerQueue();
+        processWorkersQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -219,7 +219,7 @@ ulong SafeApi::authUserCaptcha(QString login, QString password,
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
-        processWorkerQueue();
+        processWorkersQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -254,7 +254,7 @@ ulong SafeApi::logoutUser()
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
-        processWorkerQueue();
+        processWorkersQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -286,7 +286,7 @@ ulong SafeApi::getDiskQuota()
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
-        processWorkerQueue();
+        processWorkersQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -323,7 +323,7 @@ ulong SafeApi::getPersonal()
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
-        processWorkerQueue();
+        processWorkersQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -359,7 +359,7 @@ ulong SafeApi::setPersonal(QJsonDocument personal, QJsonDocument props)
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
-        processWorkerQueue();
+        processWorkersQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -393,7 +393,7 @@ ulong SafeApi::setPersonalEmail(QJsonDocument personal, QJsonDocument props, QSt
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
-        processWorkerQueue();
+        processWorkersQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -426,7 +426,7 @@ ulong SafeApi::changePassword(QString login, QString password, QString new_passw
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
-        processWorkerQueue();
+        processWorkersQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
@@ -458,7 +458,7 @@ ulong SafeApi::activatePromo(QString code)
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
         freeWorker(worker_id);
-        processWorkerQueue();
+        processWorkersQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
