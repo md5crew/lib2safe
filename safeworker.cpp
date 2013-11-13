@@ -71,16 +71,22 @@ void SafeWorker::pushFile()
         return;
     }
     file->setParent(multiPart);
+    qDebug() << "Opened" << QFileInfo(this->filepath).absoluteFilePath();
 
-    QHttpPart metaPart;
-    metaPart.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-    metaPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"metadata\""));
-    metaPart.setBody(params.query(QUrl::FullyEncoded).toUtf8());
-    multiPart->append(metaPart);
+    foreach(auto param, params.queryItems()) {
+        QHttpPart metaPart;
+        metaPart.setHeader(QNetworkRequest::ContentTypeHeader, "text/plain");
+        metaPart.setHeader(QNetworkRequest::ContentDispositionHeader,
+                           QVariant("form-data; name=\"" + param.first + "\""));
+        metaPart.setBody(param.second.toUtf8());
+        multiPart->append(metaPart);
+    }
 
     QHttpPart filePart;
-    filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/octet-stream"));
-    filePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"file\""));
+    filePart.setHeader(QNetworkRequest::ContentTypeHeader,
+                       QVariant("application/octet-stream"));
+    filePart.setHeader(QNetworkRequest::ContentDispositionHeader,
+                       QVariant("form-data; name=\"file\"; filename=\"deadbeef\""));
     filePart.setBodyDevice(file);
     multiPart->append(filePart);
 

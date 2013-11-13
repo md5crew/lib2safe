@@ -81,10 +81,10 @@ public slots:
 
     /* FILESYSTEM */
     ulong pullFile(QString file_id, QString path, ulong size = 0, ulong offset = 0);
-    //    ulong pushFile(QString dst_dir_id, QString path, QString file_name,
-    //                   bool overwrite = false, bool versioned = false,
-    //                   QJsonDocument props = QJsonDocument(),
-    //                   ulong ctime = 0, ulong mtime = 0);
+    ulong pushFile(QString dst_dir_id, QString path, QString file_name,
+                   bool overwrite = false, bool versioned = false,
+                   QJsonDocument props = QJsonDocument(),
+                   ulong ctime = 0, ulong mtime = 0);
     //    ulong copyFile(QString file_id, QString dst_dir_id, QString file_name,
     //                   bool overwrite = false, bool versioned = false);
     //    ulong moveFile(QString file_id, QString dst_dir_id, QString file_name,
