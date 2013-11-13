@@ -79,7 +79,12 @@
 #define PARAM_OFFSET "offset"
 #define PARAM_FILE "file"
 #define PARAM_FILE_ID "id"
+#define PARAM_SRC_DIR_ID "id"
+#define PARAM_DST_DIR_ID "dir_id"
 #define PARAM_URL "url"
+#define PARAM_OBJECT_ID "id"
+#define PARAM_REMOVE_NOW "remove_now"
+#define PARAM_RECURSIVE "recursive"
 #define PARAM_CONTAINER "container" // if PARAM_URL used
 #define PARAM_DIR_ID "dir_id"
 #define PARAM_DIR_NAME "dir_name"

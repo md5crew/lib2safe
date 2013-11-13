@@ -85,25 +85,29 @@ public slots:
                    bool overwrite = false, bool versioned = false,
                    QJsonDocument props = QJsonDocument(),
                    ulong ctime = 0, ulong mtime = 0);
-    //    ulong copyFile(QString file_id, QString dst_dir_id, QString file_name,
-    //                   bool overwrite = false, bool versioned = false);
-    //    ulong moveFile(QString file_id, QString dst_dir_id, QString file_name,
-    //                   bool overwrite = false, bool versioned = false);
-    //    ulong removeFile(QString file_id, bool now = false);
-    //    ulong makeDir(QString parent_dir_id, QString dir_name,
-    //                  QJsonDocument props = QJsonDocument(),
-    //                  ulong ctime = 0, ulong mtime = 0);
-    //    ulong copyDir(QString src_dir_id, QString dst_dir_id, QString dir_name,
-    //                  bool overwrite = false, bool versioned = false);
-    //    ulong moveDir(QString src_dir_id, QString dst_dir_id, QString dir_name,
-    //                  bool overwrite = false, bool versioned = false);
-    //    ulong removeDir(QString dir_id, bool recursive = false, bool now = false);
+    ulong copyFile(QString file_id, QString dst_dir_id,
+                   QString file_name = QString(),
+                   bool overwrite = false, bool versioned = false);
+    ulong moveFile(QString file_id, QString dst_dir_id,
+                   QString file_name = QString(),
+                   bool overwrite = false, bool versioned = false);
+    ulong removeFile(QString file_id, bool now = false);
+    ulong makeDir(QString parent_dir_id, QString dir_name,
+                  QJsonDocument props = QJsonDocument(),
+                  ulong ctime = 0, ulong mtime = 0);
+    ulong copyDir(QString src_dir_id, QString dst_dir_id,
+                  QString dir_name = QString(),
+                  bool overwrite = false, bool versioned = false);
+    ulong moveDir(QString src_dir_id, QString dst_dir_id,
+                  QString dir_name = QString(),
+                  bool overwrite = false, bool versioned = false);
+    ulong removeDir(QString dir_id, bool recursive = false, bool now = false);
     ulong listDir(QString dir_id = QString());
-    //    ulong getProps(QString object_id);
-    //    ulong setProps(QString object_id, QJsonDocument props);
-    //    ulong getParentTree(QString dir_id);
-    //    ulong getEvents(ulong after, bool last = false);
-    //    ulong purgeTrash();
+    ulong getProps(QString id_or_url, bool is_url = false);
+    ulong setProps(QString object_id, QJsonDocument props);
+    ulong getParentTree(QString dir_id);
+    ulong getEvents(ulong after, bool last = false);
+    ulong purgeTrash();
 
 private slots:
     void networkError(const QString& text);
