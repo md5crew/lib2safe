@@ -66,9 +66,9 @@ void SafeWorker::pushFile()
     QHttpMultiPart *multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
     QFile *file = new QFile(this->filepath);
     if(!file->open(QIODevice::ReadOnly)) {
+        qWarning() << "[" << this->id << "] Unable to open" << file->fileName() << "for reading";
         delete file;
         delete multiPart;
-        emit error("Unable to open " + file->fileName() + "for reading");
         return;
     }
     file->setParent(multiPart);
@@ -128,8 +128,8 @@ void SafeWorker::pullFile()
     QFile *file = new QFile(this->filepath);
     if(file->exists()) file->remove();
     if(!file->open(QIODevice::Append)) {
+        qWarning() << "[" << this->id << "] Unable to open" << file->fileName() << "for writing";
         delete file;
-        emit error("Unable to open " + file->fileName() + "for writing");
         return;
     }
 

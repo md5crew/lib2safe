@@ -199,8 +199,8 @@ int main(int argc, char *argv[])
     //test->getCaptcha();
     //test->getDiskQuota();
     //test->listDirs();
-    //test->getFile();
-    test->putFile();
+    test->getFile();
+    //test->putFile();
     return a.exec();
 }
 
