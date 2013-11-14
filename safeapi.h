@@ -133,7 +133,8 @@ public slots:
 
     /* LOCKS */
     ulong lockObject(QString id, ulong timeout = 0,
-                     bool exclusive = false, QJsonObject userdata);
+                     bool exclusive = false,
+                     QJsonObject userdata = QJsonObject());
     ulong unlockObject(QString lock_token);
     ulong listLocks(QString id);
     ulong refreshLock(QString lock_token, ulong timeout);
