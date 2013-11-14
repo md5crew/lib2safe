@@ -139,11 +139,12 @@ public slots:
     ulong refreshLock(QString lock_token, ulong timeout);
 
     /* SHARES */
-    ulong shareObject(QString id, QString login, bool writable = false, ulong timestamp = 0);
+    ulong shareObject(QString id, QString login,
+                      bool writable = false, ulong expires = 0);
     ulong unshareObject(QString id, QString login);
     ulong unshareAll(QString id);
     ulong listShares(QString id);
-    ulong publicObject(QString id, ulong timestamp = 0);
+    ulong publicObject(QString id, ulong expires = 0);
     ulong unpublicObject(QString id);
 
     /* VERSIONS */
