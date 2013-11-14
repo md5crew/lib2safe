@@ -1,8 +1,7 @@
-2Safe – https://www.2safe.com/
-
 ```
 $ git clone https://github.com/md5crew/lib2safe.git
-$ cd lib2safe && qmake && make -j8
+$ cd lib2safe
+$ qmake && make -j8
 
 $ ./safe
 OR
