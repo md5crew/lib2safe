@@ -23,6 +23,7 @@ void SafeWorker::run()
     }
 
     QNetworkRequest req("https://" + this->host + "/");
+    req.setHeader(QNetworkRequest::UserAgentHeader, "lib2safe/0.1");
     req.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
     QNetworkReply *reply = manager->post(req, params.query(QUrl::FullyEncoded).toUtf8());
 
@@ -91,6 +92,7 @@ void SafeWorker::pushFile()
     multiPart->append(filePart);
 
     QNetworkRequest req("https://" + this->host + "/");
+    req.setHeader(QNetworkRequest::UserAgentHeader, "lib2safe/0.1");
     QNetworkReply *reply = manager->post(req, multiPart);
     multiPart->setParent(reply);
 
@@ -134,6 +136,7 @@ void SafeWorker::pullFile()
     qDebug() << "Opened" << QFileInfo(this->filepath).absoluteFilePath();
 
     QNetworkRequest req("https://" + this->host + "/");
+    req.setHeader(QNetworkRequest::UserAgentHeader, "lib2safe/0.1");
     req.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
     QNetworkReply *reply = manager->post(req, params.query(QUrl::FullyEncoded).toUtf8());
     file->setParent(reply);

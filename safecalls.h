@@ -45,7 +45,7 @@
 #define CALL_LIST_LOCKS "list_object_locks"
 #define CALL_REFRESH_LOCK "refresh_lock_timeout"
 
-/* SHARE */
+/* SHARES */
 #define CALL_SHARE "share_object"
 #define CALL_UNSHARE "unshare_object"
 #define CALL_UNSHARE_ALL  "unshare_all"

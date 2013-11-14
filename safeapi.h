@@ -57,6 +57,28 @@ signals:
     void getEventsComplete(ulong id, QJsonArray events);
     void purgeTrashComplete(ulong id);
 
+    /* LOCKS */
+    void lockObjectComplete(ulong id, QString lock_token);
+    void unlockObjectComplete(ulong id);
+    void listLocksComplete(ulong id, QJsonArray locks);
+    void refreshLockComplete(ulong id, QJsonObject userdata, bool exclusive);
+
+    /* SHARES */
+    void shareObjectComplete(ulong id);
+    void unshareObjectComplete(ulong id);
+    void unshareAllComplete(ulong id);
+    void listSharesComplete(ulong id, QJsonArray shares);
+    void publicObjectComplete(ulong id, QString link);
+    void unpublicObjectComplete(ulong id);
+
+    /* VERSIONS */
+    void listVersionsComplete(ulong id, QJsonArray versions,
+                              QString current,
+                              QString file_id);
+    void getVersionComplete(ulong id, QString current);
+    void setVersionComplete(ulong id);
+    void removeVersionComplete(ulong id);
+    void setVersionControlComplete(ulong id);
 
 public slots:
     void freeWorker(ulong worker_id);
@@ -108,6 +130,28 @@ public slots:
     ulong getParentTree(QString dir_id);
     ulong getEvents(ulong after, bool last = false);
     ulong purgeTrash();
+
+    /* LOCKS */
+    ulong lockObject(QString id, ulong timeout = 0,
+                     bool exclusive = false, QJsonObject userdata);
+    ulong unlockObject(QString lock_token);
+    ulong listLocks(QString id);
+    ulong refreshLock(QString lock_token, ulong timeout);
+
+    /* SHARES */
+    ulong shareObject(QString id, QString login, bool writable = false, ulong timestamp = 0);
+    ulong unshareObject(QString id, QString login);
+    ulong unshareAll(QString id);
+    ulong listShares(QString id);
+    ulong publicObject(QString id, ulong timestamp = 0);
+    ulong unpublicObject(QString id);
+
+    /* VERSIONS */
+    ulong listVersions(QString id);
+    ulong getVersion(QString id);
+    ulong setVersion(QString id, QString version_id);
+    ulong removeVersion(QString id);
+    ulong setVersionControl(QString id, bool enabled);
 
 private slots:
     void networkError(const QString& text);
