@@ -7,17 +7,13 @@
 #include "safeworker.h"
 #include "safecalls.h"
 #include "safeerrors.h"
+#include "safetypes.h"
 
 class SafeApi : public QObject
 {
     Q_OBJECT
 public:
     SafeApi(QString host);
-
-    struct SafeCaptcha {
-        QByteArray picture;
-        QString id;
-    };
 
 signals:
     void errorRaised(ulong id, quint16 code, QString text);
@@ -40,15 +36,15 @@ signals:
     void pullFileProgress(ulong id, ulong bytes, ulong total_bytes);
     void pullFileComplete(ulong id);
     void pushFileProgress(ulong id, ulong bytes, ulong total_bytes);
-    void pushFileComplete(ulong id, QJsonObject file_info);
+    void pushFileComplete(ulong id, SafeFile file_info);
     void copyFileComplete(ulong id, ulong file_id);
     void moveFileComplete(ulong id, ulong file_id);
     void removeFileComplete(ulong id);
     void makeDirComplete(ulong id, ulong dir_id);
     void copyDirComplete(ulong id);
     void moveDirComplete(ulong id);
-    void listDirComplete(ulong id, QJsonArray dirs,
-                         QJsonArray files,
+    void listDirComplete(ulong id, QList<SafeDir> dirs,
+                         QList<SafeFile> files,
                          QJsonObject root_info);
     void removeDirComplete(ulong id);
     void getPropsComplete(ulong id, QJsonObject props);

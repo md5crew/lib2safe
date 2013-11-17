@@ -16,6 +16,7 @@ SOURCES += safeapi.cpp \
 HEADERS += safeapi.h \
     safeworker.h \
     safecalls.h \
-    safeerrors.h
+    safeerrors.h \
+    safetypes.h
 
 include(test/test.pro)

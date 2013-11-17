@@ -4,6 +4,18 @@
 #include <QCoreApplication>
 #include "safeapi.h"
 
+QDebug operator<<(QDebug ds, const SafeDir& d)
+{
+    ds.nospace() << d.toString();
+    return ds.space();
+}
+
+QDebug operator<<(QDebug ds, const SafeFile& f)
+{
+    ds.nospace() << f.toString();
+    return ds.space();
+}
+
 class TestSafeApi : public QObject
 {
     Q_OBJECT
@@ -40,7 +52,7 @@ public slots:
     void getCaptcha()
     {
         auto api = new SafeApi(API_HOST);
-        connect(api, &SafeApi::getCaptchaComplete, [=](ulong id, SafeApi::SafeCaptcha captcha){
+        connect(api, &SafeApi::getCaptchaComplete, [=](ulong id, SafeCaptcha captcha){
             qDebug() << "["<< id << "] Got captcha (id):" << captcha.id;
             delete api;
             if(--n < 1) { emit stop(); }
@@ -93,8 +105,8 @@ public slots:
         });
 
         connect(api, &SafeApi::listDirComplete, [=, &k](
-                ulong id, QJsonArray dirs,
-                QJsonArray files,
+                ulong id, QList<SafeDir> dirs,
+                QList<SafeFile> files,
                 QJsonObject root_info){
             qDebug() << "["<< id << "] Listing directory ("
                      << root_info.value("tree").toString() << "):"
@@ -102,13 +114,13 @@ public slots:
             qDebug() << root_info;
 
             qDebug() << "\n+++++DIRS+++++";
-            foreach(QJsonValue dir, dirs) {
-                qDebug() << dir.toObject();
+            foreach(SafeDir dir, dirs) {
+                qDebug() << dir;
             }
 
             qDebug() << "\n+++++FILES+++++";
-            foreach(QJsonValue file, files) {
-                qDebug() << file.toObject();
+            foreach(SafeFile file, files) {
+                qDebug() << file;
             }
 
             if(--k < (0-1)) {
@@ -166,7 +178,7 @@ public slots:
                           "jackpot.mp4"); // '/jackpot.mp4'
         });
 
-        connect(api, &SafeApi::pushFileComplete, [=](ulong id, const QJsonObject& file_info){
+        connect(api, &SafeApi::pushFileComplete, [=](ulong id, const SafeFile& file_info){
             qDebug() << "["<< id << "] Sucessfully pushed file"
                      << file_info;
             delete api;
@@ -198,8 +210,8 @@ int main(int argc, char *argv[])
     //test->checkEmail();
     //test->getCaptcha();
     //test->getDiskQuota();
-    //test->listDirs();
-    test->getFile();
+    test->listDirs();
+    //test->getFile();
     //test->putFile();
     return a.exec();
 }

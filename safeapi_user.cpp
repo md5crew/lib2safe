@@ -95,7 +95,7 @@ ulong SafeApi::checkLogin(QString login)
 }
 
 ulong SafeApi::registerUser(QString login, QString password,
-                            QString user_captcha, SafeApi::SafeCaptcha captcha)
+                            QString user_captcha, SafeCaptcha captcha)
 {
     ulong worker_id = getId();
     SafeWorker *worker = createWorker(CALL_REGISTER);
@@ -206,7 +206,7 @@ ulong SafeApi::authUser(QString login, QString password)
 }
 
 ulong SafeApi::authUserCaptcha(QString login, QString password,
-                               QString user_captcha, SafeApi::SafeCaptcha captcha)
+                               QString user_captcha, SafeCaptcha captcha)
 {
     ulong worker_id = getId();
     SafeWorker *worker = createWorker(CALL_AUTH);

@@ -61,7 +61,8 @@ ulong SafeApi::pushFile(QString dst_dir_id, QString path, QString file_name,
         /* LOGIC */
         QJsonObject response = reply.object().value("response").toObject();
         QJsonObject file_info = response.value("file").toObject();
-        emit pushFileComplete(worker_id, file_info);
+        SafeFile info(file_info);
+        emit pushFileComplete(worker_id, info);
         /* ----- */
     });
 
@@ -352,12 +353,22 @@ ulong SafeApi::listDir(QString dir_id) {
         }
 
         /* LOGIC */
+        QList<SafeDir> dirs;
+        QList<SafeFile> files;
         QJsonObject response = reply.object().value("response").toObject();
         QJsonObject root = response.value("root").toObject();
         QJsonArray list_dirs = response.value("list_dirs").toArray();
+        foreach(auto d, list_dirs) {
+            SafeDir dd(d.toObject());
+            dirs.append(dd);
+        }
         QJsonArray list_files = response.value("list_files").toArray();
+        foreach(auto f, list_files) {
+            SafeFile ff(f.toObject());
+            files.append(ff);
+        }
 
-        emit listDirComplete(worker_id, list_dirs, list_files, root);
+        emit listDirComplete(worker_id, dirs, files, root);
         /* ----- */
     });
 
