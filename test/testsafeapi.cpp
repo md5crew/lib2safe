@@ -206,12 +206,12 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
     auto test = new TestSafeApi();
     a.connect(test, &TestSafeApi::stop, &QCoreApplication::quit);
-    test->setN(1);
+    test->setN(2);
     //test->checkEmail();
     //test->getCaptcha();
     //test->getDiskQuota();
     test->listDirs();
-    //test->getFile();
+    test->getFile();
     //test->putFile();
     return a.exec();
 }
