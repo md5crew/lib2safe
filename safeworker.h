@@ -11,7 +11,6 @@ class SafeWorker : public QObject
     Q_OBJECT
 public:
     SafeWorker(QString host);
-    ~SafeWorker();
 
     void setCmd(QString cmd) { this->cmd = cmd; }
     QString getCmd() { return this->cmd; }

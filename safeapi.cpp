@@ -11,16 +11,14 @@ SafeApi::SafeApi(QString host) :
 void SafeApi::freeWorker(ulong worker_id)
 {
     mutex.lock();
-    SafeWorker *worker = workersPool.take(worker_id);
-    delete worker;
+    workersPool.take(worker_id); // 0 refs
     mutex.unlock();
 }
 
 void SafeApi::freeFileWorker(ulong worker_id)
 {
     mutex.lock();
-    SafeWorker *worker = fileWorkersPool.take(worker_id);
-    delete worker;
+    fileWorkersPool.take(worker_id); // 0 refs
     mutex.unlock();
 }
 

@@ -6,12 +6,7 @@
 SafeWorker::SafeWorker(QString host)
 {
     this->host = host;
-    manager = new QNetworkAccessManager();
-}
-
-SafeWorker::~SafeWorker()
-{
-    manager->deleteLater();
+    manager = new QNetworkAccessManager(this);
 }
 
 void SafeWorker::run()
