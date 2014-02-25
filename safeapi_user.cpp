@@ -122,10 +122,7 @@ ulong SafeApi::registerUser(QString login, QString password,
 
         /* LOGIC */
         QJsonValue response = reply.object().value("response");
-        this->lastLogin = login;
-        this->lastRootDir = response.toObject().value("root_dir").toString();
-        this->lastUserId = response.toObject().value("user_id").toString();
-        emit registerUserComplete(worker_id, this->lastRootDir, this->lastUserId);
+        emit registerUserComplete(worker_id);
         /* ----- */
     });
 
@@ -194,10 +191,10 @@ ulong SafeApi::authUser(QString login, QString password)
 
         /* LOGIC */
         QJsonValue response = reply.object().value("response");
-        this->lastLogin = login;
-        this->lastUserId = response.toObject().value("id").toString();
-        this->lastToken = response.toObject().value("token").toString();
-        emit authUserComplete(worker_id, this->lastUserId);
+        this->apiState.userId = response.toObject().value("id").toString();
+        this->apiState.token = response.toObject().value("token").toString();
+        this->apiState.tokenTimestamp = QDateTime::currentDateTime().toTime_t();
+        emit authUserComplete(worker_id, this->apiState.userId);
         /* ----- */
     });
 
@@ -233,10 +230,10 @@ ulong SafeApi::authUserCaptcha(QString login, QString password,
 
         /* LOGIC */
         QJsonValue response = reply.object().value("response");
-        this->lastLogin = login;
-        this->lastUserId = response.toObject().value("id").toString();
-        this->lastToken = response.toObject().value("token").toString();
-        emit authUserComplete(worker_id, this->lastUserId);
+        this->apiState.userId = response.toObject().value("id").toString();
+        this->apiState.token = response.toObject().value("token").toString();
+        this->apiState.tokenTimestamp = QDateTime::currentDateTime().toTime_t();
+        emit authUserComplete(worker_id, this->apiState.userId);
         /* ----- */
     });
 
@@ -248,7 +245,7 @@ ulong SafeApi::logoutUser()
 {
     ulong worker_id = getId();
     SafeWorker *worker = createWorker(CALL_LOGOUT);
-    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->addParam(PARAM_TOKEN, this->apiState.token);
     worker->setId(worker_id);
 
     this->connect(worker, &SafeWorker::done,
@@ -280,7 +277,7 @@ ulong SafeApi::getDiskQuota()
 {
     ulong worker_id = getId();
     SafeWorker *worker = createWorker(CALL_GET_DISK_QUOTA);
-    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->addParam(PARAM_TOKEN, this->apiState.token);
     worker->setId(worker_id);
 
     this->connect(worker, &SafeWorker::done,
@@ -317,7 +314,7 @@ ulong SafeApi::getPersonal()
 {
     ulong worker_id = getId();
     SafeWorker *worker = createWorker(CALL_GET_PERSONAL);
-    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->addParam(PARAM_TOKEN, this->apiState.token);
     worker->setId(worker_id);
 
     this->connect(worker, &SafeWorker::done,
@@ -353,7 +350,7 @@ ulong SafeApi::setPersonal(QJsonDocument personal, QJsonDocument props)
     SafeWorker *worker = createWorker(CALL_SET_PERSONAL);
     worker->addParam(PARAM_PERSONAL, personal.toJson());
     worker->addParam(PARAM_PROPERTIES, props.toJson());
-    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->addParam(PARAM_TOKEN, this->apiState.token);
     worker->setId(worker_id);
 
     this->connect(worker, &SafeWorker::done,
@@ -387,7 +384,7 @@ ulong SafeApi::setPersonalEmail(QJsonDocument personal, QJsonDocument props, QSt
     worker->addParam(PARAM_PERSONAL, personal.toJson());
     worker->addParam(PARAM_PROPERTIES, props.toJson());
     worker->addParam(PARAM_PASSWORD, password);
-    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->addParam(PARAM_TOKEN, this->apiState.token);
     worker->setId(worker_id);
 
     this->connect(worker, &SafeWorker::done,
@@ -452,7 +449,7 @@ ulong SafeApi::activatePromo(QString code)
     ulong worker_id = getId();
     SafeWorker *worker = createWorker(CALL_ACTIVATE_PROMO);
     worker->addParam(PARAM_PROMO_CODE, code);
-    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->addParam(PARAM_TOKEN, this->apiState.token);
     worker->setId(worker_id);
 
     this->connect(worker, &SafeWorker::done,

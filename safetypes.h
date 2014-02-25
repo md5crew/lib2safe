@@ -10,6 +10,18 @@ struct SafeCaptcha {
     QString id;
 };
 
+struct SafeApiState {
+    QString token;
+    QString userId;
+    uint tokenTimestamp;
+
+    void clear() {
+        token.clear();
+        userId.clear();
+        tokenTimestamp = 0;
+    }
+};
+
 struct SafeDir {
     QString id;
     QString name;

@@ -3,7 +3,7 @@
 ulong SafeApi::listVersions(QString id) {
     ulong worker_id = getId();
     SafeWorker *worker = createFileWorker(CALL_LIST_VERSIONS);
-    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->addParam(PARAM_TOKEN, this->apiState.token);
     worker->addParam(PARAM_OBJECT_ID, id);
     worker->setId(worker_id);
 
@@ -38,7 +38,7 @@ ulong SafeApi::listVersions(QString id) {
 ulong SafeApi::getVersion(QString id) {
     ulong worker_id = getId();
     SafeWorker *worker = createFileWorker(CALL_GET_VERSION);
-    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->addParam(PARAM_TOKEN, this->apiState.token);
     worker->addParam(PARAM_OBJECT_ID, id);
     worker->setId(worker_id);
 
@@ -70,7 +70,7 @@ ulong SafeApi::getVersion(QString id) {
 ulong SafeApi::setVersion(QString id, QString version_id) {
     ulong worker_id = getId();
     SafeWorker *worker = createFileWorker(CALL_SET_VERSION);
-    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->addParam(PARAM_TOKEN, this->apiState.token);
     worker->addParam(PARAM_OBJECT_ID, id);
     worker->addParam(PARAM_VERSION_ID, version_id);
     worker->setId(worker_id);
@@ -102,7 +102,7 @@ ulong SafeApi::setVersion(QString id, QString version_id) {
 ulong SafeApi::removeVersion(QString id) {
     ulong worker_id = getId();
     SafeWorker *worker = createFileWorker(CALL_REMOVE_VERSION);
-    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->addParam(PARAM_TOKEN, this->apiState.token);
     worker->addParam(PARAM_OBJECT_ID, id);
     worker->setId(worker_id);
 
@@ -134,7 +134,7 @@ ulong SafeApi::setVersionControl(QString id, bool enabled) {
     ulong worker_id = getId();
     SafeWorker *worker = createFileWorker(
                 enabled ? CALL_SET_VERSIONS_ON : CALL_SET_VERSIONS_OFF);
-    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->addParam(PARAM_TOKEN, this->apiState.token);
     worker->addParam(PARAM_OBJECT_ID, id);
     worker->setId(worker_id);
 

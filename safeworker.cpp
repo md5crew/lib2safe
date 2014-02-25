@@ -100,7 +100,8 @@ void SafeWorker::pushFile()
     });
 
     connect(reply, &QNetworkReply::uploadProgress, [=](ulong bytes, ulong total_bytes) {
-        emit progress(bytes, total_bytes);
+        if(total_bytes > 0 || bytes > 0)
+            emit progress(bytes, total_bytes);
     });
 
     connect(reply, &QNetworkReply::finished, [=]() {
@@ -146,7 +147,8 @@ void SafeWorker::pullFile()
     });
 
     connect(reply, &QNetworkReply::downloadProgress, [=](ulong bytes, ulong total_bytes) {
-        emit progress(bytes, total_bytes);
+        if(total_bytes > 0 || bytes > 0)
+            emit progress(bytes, total_bytes);
     });
 
     connect(reply, &QNetworkReply::finished, [=]() {

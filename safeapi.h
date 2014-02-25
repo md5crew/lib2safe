@@ -13,7 +13,9 @@ class SafeApi : public QObject
 {
     Q_OBJECT
 public:
-    SafeApi(QString host);
+    SafeApi(QString host, QObject *parent = 0);
+    void setState(SafeApiState state) { this->apiState = state; }
+    SafeApiState state() { return this->apiState; }
 
 signals:
     void errorRaised(ulong id, quint16 code, QString text);
@@ -22,7 +24,7 @@ signals:
     void getCaptchaComplete(ulong id, SafeCaptcha captcha);
     void checkEmailComplete(ulong id, bool available);
     void checkLoginComplete(ulong id, bool available);
-    void registerUserComplete(ulong id, QString root_dir, QString user_id);
+    void registerUserComplete(ulong id);
     void unregisterUserComplete(ulong id, QString login, QString user_id);
     void authUserComplete(ulong id, QString user_id);
     void logoutUserComplete(ulong id);
@@ -166,11 +168,8 @@ private:
     QHash<ulong, SafeWorker*> fileWorkersPool;
     QQueue<SafeWorker*> fileWorkersQueue;
 
-    /* memory */
-    QString lastToken;
-    QString lastUserId;
-    QString lastRootDir;
-    QString lastLogin;
+    /* shared state */
+    SafeApiState apiState;
 
     /* methods */
     SafeWorker *createWorker(QString cmd);

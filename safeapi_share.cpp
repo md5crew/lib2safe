@@ -4,7 +4,7 @@ ulong SafeApi::shareObject(QString id, QString login,
                            bool writable, ulong expires) {
     ulong worker_id = getId();
     SafeWorker *worker = createFileWorker(CALL_SHARE);
-    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->addParam(PARAM_TOKEN, this->apiState.token);
     worker->addParam(PARAM_OBJECT_ID, id);
     worker->addParam(PARAM_LOGIN, login);
     if(writable) worker->addParam(PARAM_SHARE_WRITABLE, TRUE);
@@ -38,7 +38,7 @@ ulong SafeApi::shareObject(QString id, QString login,
 ulong SafeApi::unshareObject(QString id, QString login) {
     ulong worker_id = getId();
     SafeWorker *worker = createFileWorker(CALL_UNSHARE);
-    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->addParam(PARAM_TOKEN, this->apiState.token);
     worker->addParam(PARAM_OBJECT_ID, id);
     worker->addParam(PARAM_LOGIN, login);
     worker->setId(worker_id);
@@ -70,7 +70,7 @@ ulong SafeApi::unshareObject(QString id, QString login) {
 ulong SafeApi::unshareAll(QString id) {
     ulong worker_id = getId();
     SafeWorker *worker = createFileWorker(CALL_UNSHARE_ALL);
-    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->addParam(PARAM_TOKEN, this->apiState.token);
     worker->addParam(PARAM_OBJECT_ID, id);
     worker->setId(worker_id);
 
@@ -101,7 +101,7 @@ ulong SafeApi::unshareAll(QString id) {
 ulong SafeApi::listShares(QString id) {
     ulong worker_id = getId();
     SafeWorker *worker = createFileWorker(CALL_LIST_SHARES);
-    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->addParam(PARAM_TOKEN, this->apiState.token);
     worker->addParam(PARAM_OBJECT_ID, id);
     worker->setId(worker_id);
 
@@ -133,7 +133,7 @@ ulong SafeApi::listShares(QString id) {
 ulong SafeApi::publicObject(QString id, ulong expires) {
     ulong worker_id = getId();
     SafeWorker *worker = createFileWorker(CALL_PUBLIC);
-    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->addParam(PARAM_TOKEN, this->apiState.token);
     worker->addParam(PARAM_OBJECT_ID, id);
     if(expires > 0) worker->addParam(PARAM_SHARE_EXPIRES, (quint32)expires);
     worker->setId(worker_id);
@@ -166,7 +166,7 @@ ulong SafeApi::publicObject(QString id, ulong expires) {
 ulong SafeApi::unpublicObject(QString id) {
     ulong worker_id = getId();
     SafeWorker *worker = createFileWorker(CALL_UNPUBLIC);
-    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->addParam(PARAM_TOKEN, this->apiState.token);
     worker->addParam(PARAM_OBJECT_ID, id);
     worker->setId(worker_id);
 

@@ -1,6 +1,7 @@
 #include "safeapi.h"
 
-SafeApi::SafeApi(QString host) :
+SafeApi::SafeApi(QString host, QObject *parent) :
+    QObject(parent),
     ticker(1000),
     maxThreads(MAX_THREADS),
     maxFileThreads(MAX_FILE_THREADS)
@@ -24,10 +25,7 @@ void SafeApi::freeFileWorker(ulong worker_id)
 
 void SafeApi::clearState()
 {
-    this->lastToken.clear();
-    this->lastUserId.clear();
-    this->lastRootDir.clear();
-    this->lastLogin.clear();
+    this->apiState.clear();
 }
 
 bool SafeApi::reportError(ulong id, const QJsonDocument& response)

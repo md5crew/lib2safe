@@ -4,7 +4,7 @@ ulong SafeApi::lockObject(QString id, ulong timeout,
                  bool exclusive, QJsonObject userdata) {
     ulong worker_id = getId();
     SafeWorker *worker = createFileWorker(CALL_LOCK);
-    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->addParam(PARAM_TOKEN, this->apiState.token);
     worker->addParam(PARAM_OBJECT_ID, id);
     worker->addParam(PARAM_LOCK_TIMEOUT, (quint32)timeout);
     if(exclusive) worker->addParam(PARAM_LOCK_EXCLUSIVE, exclusive ? "1" : "0");
@@ -39,7 +39,7 @@ ulong SafeApi::lockObject(QString id, ulong timeout,
 ulong SafeApi::unlockObject(QString lock_token) {
     ulong worker_id = getId();
     SafeWorker *worker = createFileWorker(CALL_UNLOCK);
-    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->addParam(PARAM_TOKEN, this->apiState.token);
     worker->addParam(PARAM_LOCK_TOKEN, lock_token);
     worker->setId(worker_id);
 
@@ -70,7 +70,7 @@ ulong SafeApi::unlockObject(QString lock_token) {
 ulong SafeApi::listLocks(QString id) {
     ulong worker_id = getId();
     SafeWorker *worker = createFileWorker(CALL_LIST_LOCKS);
-    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->addParam(PARAM_TOKEN, this->apiState.token);
     worker->addParam(PARAM_OBJECT_ID, id);
     worker->setId(worker_id);
 
@@ -102,7 +102,7 @@ ulong SafeApi::listLocks(QString id) {
 ulong SafeApi::refreshLock(QString lock_token, ulong timeout) {
     ulong worker_id = getId();
     SafeWorker *worker = createFileWorker(CALL_REFRESH_LOCK);
-    worker->addParam(PARAM_TOKEN, this->lastToken);
+    worker->addParam(PARAM_TOKEN, this->apiState.token);
     worker->addParam(PARAM_LOCK_TOKEN, lock_token);
     worker->addParam(PARAM_LOCK_TIMEOUT, (quint32)timeout);
     worker->setId(worker_id);
