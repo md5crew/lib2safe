@@ -14,6 +14,7 @@ class SafeApi : public QObject
     Q_OBJECT
 public:
     SafeApi(QString host, QObject *parent = 0);
+    ~SafeApi();
     void setState(SafeApiState state) { this->apiState = state; }
     SafeApiState state() { return this->apiState; }
 

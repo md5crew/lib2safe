@@ -4,22 +4,31 @@ SafeApi::SafeApi(QString host, QObject *parent) :
     QObject(parent),
     ticker(1000),
     maxThreads(MAX_THREADS),
-    maxFileThreads(MAX_FILE_THREADS)
+    maxFileThreads(MAX_FILE_THREADS),
+    host(host)
+{ }
+
+SafeApi::~SafeApi()
 {
-    this->host = host;
+    foreach (auto worker, fileWorkersPool) {
+        worker->disconnect();
+        worker->deleteLater();
+    }
+    this->disconnect();
+    this->deleteLater();
 }
 
 void SafeApi::freeWorker(ulong worker_id)
 {
     mutex.lock();
-    workersPool.take(worker_id); // 0 refs
+    workersPool.take(worker_id)->deleteLater();
     mutex.unlock();
 }
 
 void SafeApi::freeFileWorker(ulong worker_id)
 {
     mutex.lock();
-    fileWorkersPool.take(worker_id); // 0 refs
+    fileWorkersPool.take(worker_id)->deleteLater();
     mutex.unlock();
 }
 

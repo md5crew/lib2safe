@@ -9,6 +9,12 @@ SafeWorker::SafeWorker(QString host)
     manager = new QNetworkAccessManager(this);
 }
 
+SafeWorker::~SafeWorker()
+{
+    this->disconnect();
+    this->deleteLater();
+}
+
 void SafeWorker::run()
 {
     if(!manager) {
@@ -67,7 +73,6 @@ void SafeWorker::pushFile()
         return;
     }
     file->setParent(multiPart);
-    qDebug() << "Opened" << QFileInfo(this->filepath).absoluteFilePath();
 
     foreach(auto param, params.queryItems()) {
         QHttpPart metaPart;
@@ -128,8 +133,6 @@ void SafeWorker::pullFile()
         delete file;
         return;
     }
-
-    qDebug() << "Opened" << QFileInfo(this->filepath).absoluteFilePath();
 
     QNetworkRequest req("https://" + this->host + "/");
     req.setHeader(QNetworkRequest::UserAgentHeader, "lib2safe/0.1");
