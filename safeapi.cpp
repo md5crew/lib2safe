@@ -61,15 +61,15 @@ ulong SafeApi::getId()
 
 void SafeApi::networkError(const QString& text)
 {
-    qDebug() << "[ERROR] network error:\n" << text;
+    qWarning() << "[ERROR] network error:\n" << text;
 }
 
 SafeWorker *SafeApi::createWorker(QString cmd)
 {
     SafeWorker *worker = new SafeWorker(this->host);
     connect(worker, &SafeWorker::error, [=](const QString& text){
-        freeWorker(worker->getId());
         networkError(text);
+        freeWorker(worker->getId());
     });
 
     worker->setCmd(cmd);
@@ -80,8 +80,8 @@ SafeWorker *SafeApi::createFileWorker(QString cmd)
 {
     SafeWorker *worker = new SafeWorker(this->host);
     connect(worker, &SafeWorker::error, [=](const QString& text){
-        freeFileWorker(worker->getId());
         networkError(text);
+        freeFileWorker(worker->getId());
     });
 
     worker->setCmd(cmd);
