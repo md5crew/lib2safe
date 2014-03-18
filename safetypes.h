@@ -13,7 +13,7 @@ struct SafeCaptcha {
 struct SafeApiState {
     QString token;
     QString userId;
-    uint tokenTimestamp;
+    ulong tokenTimestamp;
 
     void clear() {
         token.clear();
@@ -33,6 +33,7 @@ struct SafeDir {
     ulong ctime;
     ulong mtime;
     ulong uptime;
+    bool is_trash;
     bool shared;
     bool versioned;
 
@@ -51,6 +52,7 @@ struct SafeDir {
         ctime = obj.value("ctime").toDouble();
         mtime = obj.value("mtime").toDouble();
         uptime = obj.value("uptime").toDouble();
+        is_trash = (obj.value("is_trash").toDouble() == 1) ? true : false;
         shared = (obj.value("shared").toDouble() == 1) ? true : false;
         versioned = (obj.value("versioned").toDouble() == 1) ? true : false;
     }
@@ -77,6 +79,7 @@ struct SafeFile {
     ulong mtime;
     ulong total_size;
     ulong version_count;
+    bool is_trash;
     bool shared;
     bool versioned;
 
@@ -101,6 +104,7 @@ struct SafeFile {
         mtime = obj.value("mtime").toDouble();
         total_size = obj.value("total_size").toDouble();
         version_count = obj.value("version_count").toDouble();
+        is_trash = (obj.value("is_trash").toDouble() == 1) ? true : false;
         shared = (obj.value("shared").toDouble() == 1) ? true : false;
         versioned = (obj.value("versioned").toDouble() == 1) ? true : false;
     }
