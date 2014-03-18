@@ -51,7 +51,7 @@ ulong SafeApi::pushFile(QString dst_dir_id, QString path, QString file_name,
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -96,7 +96,7 @@ ulong SafeApi::copyFile(QString file_id, QString dst_dir_id,
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -134,7 +134,7 @@ ulong SafeApi::moveFile(QString file_id, QString dst_dir_id,
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -168,7 +168,7 @@ ulong SafeApi::removeFile(QString file_id, bool now)
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -205,7 +205,7 @@ ulong SafeApi::makeDir(QString parent_dir_id, QString dir_name,
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -243,7 +243,7 @@ ulong SafeApi::copyDir(QString src_dir_id, QString dst_dir_id,
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -280,7 +280,7 @@ ulong SafeApi::moveDir(QString src_dir_id, QString dst_dir_id,
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -314,7 +314,7 @@ ulong SafeApi::removeDir(QString dir_id, bool recursive, bool now)
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -339,13 +339,14 @@ ulong SafeApi::listDir(QString dir_id) {
 
     this->connect(worker, &SafeWorker::done,
                   [=](const SafeWorker *w, const QByteArray& data) {
+        //qDebug() << "DATA:" << data << "DATA LEN:" << data.length();
         freeWorker(worker_id);
         processWorkersQueue();
 
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -396,7 +397,7 @@ ulong SafeApi::getProps(QString id_or_url, bool is_url)
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -430,7 +431,7 @@ ulong SafeApi::setProps(QString object_id, QJsonDocument props)
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -462,7 +463,7 @@ ulong SafeApi::getParentTree(QString dir_id)
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -496,7 +497,7 @@ ulong SafeApi::getEvents(ulong after, bool last)
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -504,7 +505,8 @@ ulong SafeApi::getEvents(ulong after, bool last)
         }
 
         /* LOGIC */
-        QJsonArray events = reply.object().value("events").toArray();
+        QJsonArray events = reply.object().value("response")
+                .toObject().value("events").toArray();
         emit getEventsComplete(worker_id, events);
         /* ----- */
     });
@@ -528,7 +530,7 @@ ulong SafeApi::purgeTrash()
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {

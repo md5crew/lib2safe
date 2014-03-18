@@ -19,7 +19,7 @@ ulong SafeApi::shareObject(QString id, QString login,
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -51,7 +51,7 @@ ulong SafeApi::unshareObject(QString id, QString login) {
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -82,7 +82,7 @@ ulong SafeApi::unshareAll(QString id) {
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -113,7 +113,7 @@ ulong SafeApi::listShares(QString id) {
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -146,7 +146,7 @@ ulong SafeApi::publicObject(QString id, ulong expires) {
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -178,7 +178,7 @@ ulong SafeApi::unpublicObject(QString id) {
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {

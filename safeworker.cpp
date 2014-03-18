@@ -23,7 +23,7 @@ void SafeWorker::run()
     QNetworkReply *reply = manager->post(req, params.query(QUrl::FullyEncoded).toUtf8());
 
     connect(reply, &QNetworkReply::sslErrors, [=](QList<QSslError> ssl_errors){
-        qDebug() << "SSL ERRORS DETECTED: \n" << ssl_errors;
+        qWarning() << "SSL ERRORS DETECTED: \n" << ssl_errors;
     });
 
     connect(reply, &QNetworkReply::readyRead, [=](){
@@ -91,7 +91,7 @@ void SafeWorker::pushFile()
     multiPart->setParent(reply);
 
     connect(reply, &QNetworkReply::sslErrors, [=](QList<QSslError> ssl_errors) {
-        qDebug() << "SSL ERRORS DETECTED: \n" << ssl_errors;
+        qWarning() << "SSL ERRORS DETECTED: \n" << ssl_errors;
     });
 
     connect(reply, &QNetworkReply::readyRead, [=](){
@@ -135,7 +135,7 @@ void SafeWorker::pullFile()
     file->setParent(reply);
 
     connect(reply, &QNetworkReply::sslErrors, [=](QList<QSslError> ssl_errors) {
-        qDebug() << "SSL ERRORS DETECTED: \n" << ssl_errors;
+        qWarning() << "SSL ERRORS DETECTED: \n" << ssl_errors;
     });
 
     connect(reply, &QNetworkReply::readyRead, [=](){

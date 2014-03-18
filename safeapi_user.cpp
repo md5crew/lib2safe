@@ -13,7 +13,7 @@ ulong SafeApi::getCaptcha()
         if(w->getCookies().contains("captcha2safe")) {
             captcha.id = w->getCookies().value("captcha2safe");
         } else {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] no PARAM_CAPTCHA_ID in cookies:\n" << w->getCookies();
         }
 
@@ -43,7 +43,7 @@ ulong SafeApi::checkEmail(QString email)
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -76,7 +76,7 @@ ulong SafeApi::checkLogin(QString login)
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -113,7 +113,7 @@ ulong SafeApi::registerUser(QString login, QString password,
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -146,7 +146,7 @@ ulong SafeApi::unregisterUser(QString login, QString password)
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -182,7 +182,7 @@ ulong SafeApi::authUser(QString login, QString password)
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -221,7 +221,7 @@ ulong SafeApi::authUserCaptcha(QString login, QString password,
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -256,7 +256,7 @@ ulong SafeApi::logoutUser()
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -288,7 +288,7 @@ ulong SafeApi::getDiskQuota()
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -325,7 +325,7 @@ ulong SafeApi::getPersonal()
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -361,7 +361,7 @@ ulong SafeApi::setPersonal(QJsonDocument personal, QJsonDocument props)
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -395,7 +395,7 @@ ulong SafeApi::setPersonalEmail(QJsonDocument personal, QJsonDocument props, QSt
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -428,7 +428,7 @@ ulong SafeApi::changePassword(QString login, QString password, QString new_passw
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -460,7 +460,7 @@ ulong SafeApi::activatePromo(QString code)
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {

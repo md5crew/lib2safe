@@ -15,7 +15,7 @@ ulong SafeApi::listVersions(QString id) {
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -50,7 +50,7 @@ ulong SafeApi::getVersion(QString id) {
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -83,7 +83,7 @@ ulong SafeApi::setVersion(QString id, QString version_id) {
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -114,7 +114,7 @@ ulong SafeApi::removeVersion(QString id) {
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -146,7 +146,7 @@ ulong SafeApi::setVersionControl(QString id, bool enabled) {
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {

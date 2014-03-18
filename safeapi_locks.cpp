@@ -19,7 +19,7 @@ ulong SafeApi::lockObject(QString id, ulong timeout,
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -51,7 +51,7 @@ ulong SafeApi::unlockObject(QString lock_token) {
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -82,7 +82,7 @@ ulong SafeApi::listLocks(QString id) {
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {
@@ -115,7 +115,7 @@ ulong SafeApi::refreshLock(QString lock_token, ulong timeout) {
         QJsonParseError json_error;
         QJsonDocument reply = QJsonDocument::fromJson(data, &json_error);
         if(json_error.error) {
-            qDebug() << "[" << worker_id
+            qWarning() << "[" << worker_id
                      << "] JSON error:" << json_error.errorString();
             return;
         } else if(reportError(worker_id, reply)) {

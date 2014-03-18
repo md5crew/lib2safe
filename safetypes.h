@@ -26,6 +26,7 @@ struct SafeDir {
     QString id;
     QString name;
     QString special_dir;
+    QString tree;
     QString creator;
     QString owner;
     QString c_type;
@@ -37,6 +38,7 @@ struct SafeDir {
     bool shared;
     bool versioned;
 
+    explicit SafeDir(){}
     SafeDir(QJsonObject obj) {
         fromJsonObject(obj);
     }
@@ -46,6 +48,7 @@ struct SafeDir {
         name = obj.value("name").toString();
         special_dir = obj.value("special_dir").toString();
         creator = obj.value("creator").toString();
+        tree = obj.value("tree").toString();
         owner = obj.value("owner").toString();
         c_type = obj.value("c_type").toString();
         props = obj.value("props").toObject();
@@ -66,6 +69,7 @@ struct SafeFile {
     QString id;
     QString name;
     QString creator;
+    QString tree;
     QString owner;
     QString c_type;
     QJsonObject props;
@@ -83,6 +87,7 @@ struct SafeFile {
     bool shared;
     bool versioned;
 
+    explicit SafeFile(){}
     SafeFile(QJsonObject obj) {
         fromJsonObject(obj);
     }
@@ -91,6 +96,7 @@ struct SafeFile {
         id = obj.value("id").toString();
         name = obj.value("name").toString();
         creator = obj.value("creator").toString();
+        tree = obj.value("tree").toString();
         owner = obj.value("owner").toString();
         c_type = obj.value("c_type").toString();
         props = obj.value("props").toObject();
