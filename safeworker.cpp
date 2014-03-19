@@ -13,9 +13,8 @@ void SafeWorker::handleData()
 {
     if(reply->error()) {
         emit error(reply->errorString());
-    } else {
-        emit done(this, reply->readAll());
     }
+    emit done(this, reply->readAll());
 }
 
 void SafeWorker::run()
