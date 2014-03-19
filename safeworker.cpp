@@ -9,6 +9,15 @@ SafeWorker::SafeWorker(QString host)
     manager = new QNetworkAccessManager(this);
 }
 
+void SafeWorker::handleData()
+{
+    if(reply->error()) {
+        emit error(reply->errorString());
+    } else {
+        emit done(this, reply->readAll());
+    }
+}
+
 void SafeWorker::run()
 {
     if(!manager) {
@@ -20,15 +29,13 @@ void SafeWorker::run()
     QNetworkRequest req("https://" + this->host + "/");
     req.setHeader(QNetworkRequest::UserAgentHeader, "lib2safe/0.1");
     req.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-    QNetworkReply *reply = manager->post(req, params.query(QUrl::FullyEncoded).toUtf8());
+    this->reply = manager->post(req, params.query(QUrl::FullyEncoded).toUtf8());
 
     connect(reply, &QNetworkReply::sslErrors, [=](QList<QSslError> ssl_errors){
         qWarning() << "SSL ERRORS DETECTED: \n" << ssl_errors;
     });
 
-    connect(reply, &QNetworkReply::readyRead, [=](){
-        emit done(this, reply->readAll());
-    });
+    connect(reply, &QNetworkReply::finished, this, &SafeWorker::handleData);
 
     connect(reply, &QNetworkReply::metaDataChanged, [=](){
         QVariant cookie_header = reply->header(QNetworkRequest::SetCookieHeader);
@@ -40,13 +47,6 @@ void SafeWorker::run()
                 cookies.insert(kv[0], kv[1]);
             }
         }
-    });
-
-    connect(reply, &QNetworkReply::finished, [=](){
-        if(reply->error()) {
-            emit error(reply->errorString());
-        }
-        reply->deleteLater();
     });
 }
 

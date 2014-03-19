@@ -38,7 +38,6 @@ struct SafeDir {
     bool shared;
     bool versioned;
 
-    explicit SafeDir(){}
     SafeDir(QJsonObject obj) {
         fromJsonObject(obj);
     }
@@ -87,7 +86,6 @@ struct SafeFile {
     bool shared;
     bool versioned;
 
-    explicit SafeFile(){}
     SafeFile(QJsonObject obj) {
         fromJsonObject(obj);
     }

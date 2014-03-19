@@ -23,6 +23,9 @@ signals:
     void progress(ulong bytes, ulong total_bytes);
     void error(QString text);
 
+private slots:
+    void handleData();
+
 public slots:
     void run();
     void pushFile();
@@ -37,6 +40,7 @@ private:
     QUrlQuery params;
     QNetworkAccessManager *manager;
     QHash<QString, QString> cookies; // C IS FOR COOKIE, THAT's GOOD ENOUGH FOR ME
+    QNetworkReply *reply;
 };
 
 #endif // SAFEWORKER_H
